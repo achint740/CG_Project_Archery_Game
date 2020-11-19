@@ -1,9 +1,9 @@
 //Excute once the window is loaded
 window.onload = function(){
 
+    //Hide all other elements except the rules and input
     $('#showPoint').hide();
     $('#score').hide();
-    // $('#animCanvas').hide();
     $('#Score').hide();
     $('#best').hide();
 
@@ -16,12 +16,16 @@ window.onload = function(){
 
     //Define the startGame function
     function startGame(){
+        //Block the display of entry page once game is started
         entrypage.style.display = "none";
+
+        //Display the other elements now 
         $('#showPoint').show();
         $('#score').show();
         $('#myCanvas').show();
         $('#animCanvas').show();
-        // alert("Theme Selected " + $('#opt').val());
+        
+        //Pick the selected theme and select image accordingly
         let theme = $('#opt').val()
         if(theme=="Basic"){
             document.body.style.backgroundImage = "url('Basic.jpeg')";
@@ -32,21 +36,20 @@ window.onload = function(){
         if(theme=="Winter"){
             document.body.style.backgroundImage = "url('winter.jpg')";
         }
-        // document.body.style.backgroundrepeat = "no-repeat";
-        document.body.style.backgroundSize = "cover";
-        let x =  $("#username").val();
-        if(x.length == 0){
+        
+        let name =  $("#username").val();
+        if(name.length == 0){
             alert('Please enter your name');
             document.location.href = 'index.html';
         }
         else{
-            document.getElementById("playername").innerHTML = "PlayerName : " + x;
+            document.getElementById("playername").innerHTML = "PlayerName : " + name;
             StartGame_Helper();
         }
     }
-
+    
+    //Variable to keep track of the best score
     var bestScore = 0;
-    var runcount = 0;
     
     //Define the startGame Helper function
     function StartGame_Helper(){
@@ -54,16 +57,17 @@ window.onload = function(){
         //Set the Timer for 6 secs for an arrow
         var countTimeOut;
         function countTime(){
-        var container = document.getElementById("timerDiv");
-        container.innerHTML = "<div class='timer'></div>";
-        countTimeOut = setTimeout(shoot,7000);
+            var container = document.getElementById("timerDiv");
+            container.innerHTML = "<div class='timer'></div>";
+            countTimeOut = setTimeout(shoot,6000);
         }
         countTime();
         
         //Score Area Display
         var gameScore = document.getElementById("score");
         gameScore.innerHTML = "0";
-        //Initially Total Score : 0
+
+        //Initially Total Score : 0 & Board isn't moving
         var totalScore = 0;
         var autoMove = false;
     
@@ -71,10 +75,11 @@ window.onload = function(){
         var w = window.innerWidth;
         var h = window.innerHeight;
         
-    
         var updatePointArea = document.getElementById("showPoint");
         updatePointArea.style.height = h+"px";
         updatePointArea.style.width = w+"px";
+
+        //Get the arrows display
         var uScore = document.querySelector("#showPoint .u");
         var arrs = document.getElementById("arrs");
         
@@ -85,6 +90,7 @@ window.onload = function(){
             arrs.innerHTML = arr;
         }
 
+        //Function to animate the score 
         function animateScore(scr,arrNum){
             if(scr >= 7) uScore.innerHTML = "&uarr; +"+scr;
             else uScore.innerHTML = "+"+scr;
@@ -106,11 +112,13 @@ window.onload = function(){
             },1000);
         }
 
+        //Grab the animCanvas and set width and height
         var c2 = document.getElementById("animCanvas");
         c2.height = h;
         c2.width = w;
         var ctx2 = c2.getContext("2d");
-    
+
+        //Build a prototype for FireWorks Animation
         var fwBuilder = function(n,x,y,speed){
             this.n = n;
             this.x = x;
@@ -120,7 +128,6 @@ window.onload = function(){
         }
     
         fwBuilder.prototype.ready = function(){
-            console.log("N : " + this.n);
             for(var i = 0; i < this.n; i++){
                 this.balls[i] = {
                     x:this.x,
@@ -132,10 +139,10 @@ window.onload = function(){
                 }
             }
         }
-    
+
+        //Define the draw function for animation of fireworks
         fwBuilder.prototype.draw = function(){
             for(var i = 0; i < this.n; i++){
-                console.log("Drawing");
                 ctx2.beginPath();
                 ctx2.arc(this.balls[i].x,this.balls[i].y,7,0,Math.PI*2);
                 ctx2.fill();
@@ -152,15 +159,16 @@ window.onload = function(){
                 ctx2.clearRect(0,0,w,h);
             }
         }
-    
+        
+        //Set 2 fireworks : 1 at left and other at right
         var fw1 = new fwBuilder(40,w/5,h,3);
         var fw2 = new fwBuilder(40,4*w/5,h,3);
     
         var intvA;
         var running = false;
-    
+        
+        //Define a function to call fireworks by setting an interval
         function newF(){
-            console.log("newF called");
             if(!running){
                 fw1.ready();
                 fw2.ready();
@@ -172,7 +180,8 @@ window.onload = function(){
                 },15)
             }
         }
-    
+        
+        //call the function once at the start of game
         newF();
         
         //Get the Canvas Area
@@ -190,11 +199,11 @@ window.onload = function(){
             x:30,
             y:100,
             dy:3,
-              r:50,
-              color:"#000",
-              lw:3,
-              start:Math.PI+Math.PI/2,
-              end:Math.PI-Math.PI/2
+            r:50,
+            color:"#000",
+            lw:3,
+            start:Math.PI+Math.PI/2,
+            end:Math.PI-Math.PI/2
         }
     
         var rope = {
@@ -219,6 +228,7 @@ window.onload = function(){
         var totalArr = 5;
         updateArrows(totalArr);
 
+        //Function for drawing the board
         function drawBoard() {
             ctx.beginPath();
             ctx.fillRect(board.x,board.y-5,40,board.width+3);
@@ -235,7 +245,6 @@ window.onload = function(){
                 board.dy *= -1;
             }
         
-        
             if(autoMove){
                 board.y += board.dy;
                 if(checkArrowMoveWithBoard1){
@@ -246,7 +255,6 @@ window.onload = function(){
                 }
             }
             else{
-        
                 if(boardMove){
                     if(Math.abs(board.y - boardY) > 5){
                         board.y += board.dy;
@@ -265,7 +273,6 @@ window.onload = function(){
         }
     
         //Draw Arrow and Define functionality
-    
         function Arrow(){
             this.w = 85;
             this.x = arc.x-25;
@@ -305,14 +312,9 @@ window.onload = function(){
                                     }
                                     moveArrowCheck = false;
                                     score++;
-                                    //console.log(score);
                                     if(score === 4){
                                         arc.dy = 5;
                                     }
-                                    else if(score === 8){
-                                        autoMove = true;
-                                    }
-                            
                             
                                     if(this.fy >= board.y-board.height/2 && this.fy <= board.y+board.height/2) {
                                         var scores = this.fy - board.y;
@@ -320,58 +322,49 @@ window.onload = function(){
                                         if(currentScore >= 7){
                                             newF();
                                             totalArr+=2;
-                                        //     try{
-                                        //         successSound.play().catch(function(e){});
-                                        //     }catch(err){
-                                        // }
+                                        }
+                                
+                                        totalScore += currentScore;
+                                        gameScore.innerHTML = totalScore;
+                                    
+                                        animateScore(currentScore,totalArr);
+                                    
+                                        boardY = board.y + scores;
+                                        if(scores>=0){
+                                            boardMove = true;
+                                        }
+                                        else {
+                                            boardMove = false;
+                                        }
+ 
                                     }
-                                
-                                    totalScore += currentScore;
-                                    gameScore.innerHTML = totalScore;
-                                
-                                    animateScore(currentScore,totalArr);
-                                
-                                    //board.y += scores;// + Math.floor(Math.random()*20);
-                                    boardY = board.y + scores;
-                                    if(scores>=0){
-                                        boardMove = true;
+                                    else{
+                                        updateArrows(totalArr);
                                     }
-                                    else {
-                                        boardMove = false;
+
+                                    if(totalScore >= 35){
+                                        autoMove = true;
                                     }
-                                
-                                    //this.fy += scores;
-                                }
-                                else updateArrows(totalArr);
+
                                     if(totalArr <= 0){
                                         clearInterval(intv);
-                                        // try{
-                                        //     //bgSound.pause();
-                                        //     endSound.play().catch(function(e){});
-                                        // }catch(err){
-                                    // }
-                                    document.body.style.backgroundImage = "url('Img2.jpg')";
-                                    document.getElementById("animCanvas").removeEventListener("click",shoot);
-                                    document.body.removeEventListener("keydown",shoot);
-                                    entrypage.style.display = "block";
-                                    $('#myCanvas').hide();
-                                    $('#animCanvas').hide();
-                                    $('#showPoint').hide();
-                                    $('#score').hide();
-                                    document.getElementById("title").innerHTML = "Your Score<br>"+totalScore;
-                                    if(bestScore < totalScore){
-                                        bestScore = totalScore;
-                                        console.log(bestScore);
-                                    //     try{
-                                    //         highScoreSound.play().catch(function(e){});
-                                    //     }catch(err){
-                                    // }
+                                        document.body.style.backgroundImage = "url('Img2.jpg')";
+                                        document.getElementById("animCanvas").removeEventListener("click",shoot);
+                                        document.body.removeEventListener("keydown",shoot);
+                                        entrypage.style.display = "block";
+                                        $('#myCanvas').hide();
+                                        $('#animCanvas').hide();
+                                        $('#showPoint').hide();
+                                        $('#score').hide();
+                                        document.getElementById("title").innerHTML = "Your Score<br>"+totalScore;
+                                        if(bestScore < totalScore){
+                                            bestScore = totalScore;
+                                            console.log(bestScore);
+                                        }
+                                        $('#best').show()
+                                        document.getElementById("score").innerHTML = 0;
+                                        document.getElementById("best").innerHTML = "Best Score : " + bestScore;
                                     }
-                                    $('#best').show()
-                                    document.getElementById("score").innerHTML = 0;
-                                    document.getElementById("best").innerHTML = "Best Score : " + bestScore;
-                                }
-                            
                                 }
                                 else {
                                     this.x += this.dx;
@@ -396,7 +389,6 @@ window.onload = function(){
         }
 
         // Arrow Move With Board
-    
         Arrow.prototype.moveArrowWithBoard = function(dir) {
             if(this == arrow1){
                 arrow1.fy += board.dy*dir;
@@ -419,13 +411,10 @@ window.onload = function(){
 
         var score = 0;
     
-
-
-         //Functions for Drawing Items :
+        //Functions for Drawing Items :
         //  1) Draw Board
         //  2) Draw Arc
         //  3) Draw Rope
-    
         function drawArc() {
             ctx.beginPath();
               ctx.arc(arc.x,arc.y,arc.r,arc.start,arc.end);
@@ -448,46 +437,45 @@ window.onload = function(){
               ctx.closePath();
         }
 
-         //Arrow Moving function...
-         function move () {
+        //Arrow Moving function...
+        function move (){
             ctx.clearRect(0,0,w,h);
             if(arc.y>h-50 || arc.y<50){
               arc.dy*=-1;
             }
             arc.y+=arc.dy;
-      }
+        }
       
-      //Arrow Shooting Function
-      function shoot(){
-          if(arrow1.vis && arrow2.vis && arrows != -1){
-            moveArrowCheck = true;
-            clearTimeout(countTimeOut);
-            countTime();
-            if(arrows%2===0){
-                  arrow1.status = true;
-                  arrow1.fy = arc.y;
-                  arrow2.status = false;
-                  arrow2.x = rope.x;
-                  arrow2.vis = false;
+        //Arrow Shooting Function
+        function shoot(){
+            if(arrow1.vis && arrow2.vis && arrows != -1){
+                moveArrowCheck = true;
+                clearTimeout(countTimeOut);
+                countTime();
+                if(arrows%2===0){
+                    arrow1.status = true;
+                    arrow1.fy = arc.y;
+                    arrow2.status = false;
+                    arrow2.x = rope.x;
+                    arrow2.vis = false;
                 }
-            else{
-                  arrow1.status = false;
-                  arrow2.fy = arc.y;
-                  arrow2.status = true;
-                  arrow1.x = rope.x;
-                  arrow1.vis = false;
-            }
+                else{
+                    arrow1.status = false;
+                    arrow2.fy = arc.y;
+                    arrow2.status = true;
+                    arrow1.x = rope.x;
+                    arrow1.vis = false;
+                }
             totalArr--;
-          //   try{
-          //       shootSound.play().catch(function(e){});
-          //       }catch(err){}
-          }
-          arrows++;
-    }
-    
+            }
+            arrows++;
+        }
+        
+        //On any key stroke, call the shoot arrow function
         document.getElementById("animCanvas").addEventListener("click",shoot);
         document.body.addEventListener("keydown",shoot);
-    
+        
+        //Call the functions for drawing various objects and load the game
         var intv = setInterval(function(){
               move();
               drawArc();
