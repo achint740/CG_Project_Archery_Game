@@ -6,3 +6,5 @@ Contributors :
 
 # Achint         2k18/SE/009
 # Anushree Mahur 2k18/SE/033
+
+Deployed on Netlify : https://cg-project-se-009-033.netlify.app/
