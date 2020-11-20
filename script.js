@@ -323,6 +323,9 @@ window.onload = function(){
                                             newF();
                                             totalArr+=2;
                                         }
+                                        else if(currentScore>=6){
+                                            totalArr+=1;
+                                        }
                                 
                                         totalScore += currentScore;
                                         gameScore.innerHTML = totalScore;
