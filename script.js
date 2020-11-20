@@ -33,7 +33,7 @@ window.onload = function(){
         else if(theme=="Summer"){
             document.body.style.backgroundImage = "url('summer.jpg')";
         }
-        if(theme=="Winter"){
+        else if(theme=="Winter"){
             document.body.style.backgroundImage = "url('winter.jpg')";
         }
         
@@ -342,7 +342,7 @@ window.onload = function(){
                                         updateArrows(totalArr);
                                     }
 
-                                    if(totalScore >= 35){
+                                    if(totalScore >= 30){
                                         autoMove = true;
                                     }
 
